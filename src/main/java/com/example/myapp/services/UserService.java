@@ -4,7 +4,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import com.example.myapp.models.User;
 import com.example.myapp.repositories.UserRepository;
-
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +20,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
-@CrossOrigin(origins="*")
 public class UserService {
+
     @Autowired
 	UserRepository userRepository;
 
@@ -35,19 +35,20 @@ public class UserService {
 	}
 
 	@PostMapping("/api/login")
-	public User login(@RequestBody User user, HttpSession session) {
+	public User login(@RequestBody User user, HttpSession session, HttpServletResponse response) {
 		List<User> userFound = (List<User>) userRepository.findUserByUsernameAndPassword(user.getUsername(),
 				user.getPassword());
 		if (userFound.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return null;
-		}
+        }
 		session.setAttribute("user", userFound.get(0));
 		return userFound.get(0);
 	}
 
 	@GetMapping("/api/profile")
 	public Optional<User> profile(HttpSession session) {
-		User currentUser = (User) session.getAttribute("user");
+        User currentUser = (User) session.getAttribute("user");
 		return userRepository.findById(currentUser.getId());
     }
     
@@ -75,12 +76,12 @@ public class UserService {
 
 		User user = optional.get();
 		user.setUsername(newUser.getUsername());
-        newUser.setPassword(user.getPassword());
-		newUser.setFirstName(user.getFirstName());
-		newUser.setLastName(user.getLastName());
-		newUser.setPhone(user.getPhone());
-		newUser.setEmail(user.getEmail());
-		newUser.setRole(user.getRole());
+        user.setPassword(newUser.getPassword());
+		user.setFirstName(newUser.getFirstName());
+		user.setLastName(newUser.getLastName());
+		user.setPhone(newUser.getPhone());
+		user.setEmail(newUser.getEmail());
+		user.setRole(newUser.getRole());
 		return userRepository.save(user);
 	}
 
