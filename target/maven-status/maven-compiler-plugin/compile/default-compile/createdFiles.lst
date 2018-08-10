@@ -1,0 +1,11 @@
+com/example/myapp/models/User.class
+com/example/myapp/repositories/CuisineRepository.class
+com/example/myapp/repositories/RecipeRepository.class
+com/example/myapp/services/CuisineService.class
+main/java/com/example/myapp/models/Role.class
+com/example/myapp/DemoApplication.class
+com/example/myapp/services/UserService.class
+com/example/myapp/services/RecipeService.class
+com/example/myapp/models/Cuisine.class
+com/example/myapp/repositories/UserRepository.class
+com/example/myapp/models/Recipe.class
