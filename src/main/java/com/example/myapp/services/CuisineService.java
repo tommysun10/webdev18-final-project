@@ -21,14 +21,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @RestController
 public class CuisineService {
-    @Autowired
+	@Autowired
 	CuisineRepository cuisineRepository;
 
 	@PostMapping("/api/cuisine")
 	public Cuisine create(@RequestBody Cuisine cuisine) {
-        List<Cuisine> cuisineFound = (List<Cuisine>) cuisineRepository.findCuisineByName(cuisine.getTitle()); 
-    		if (!cuisineFound.isEmpty()) {
-			return null; 
+		List<Cuisine> cuisineFound = (List<Cuisine>) cuisineRepository.findCuisineByName(cuisine.getTitle());
+		if (!cuisineFound.isEmpty()) {
+			return null;
 		}
 		return cuisineRepository.save(cuisine);
 	}
@@ -37,6 +37,5 @@ public class CuisineService {
 	public List<Cuisine> findAllCuisines() {
 		return (List<Cuisine>) cuisineRepository.findAll();
 	}
-
 
 }
