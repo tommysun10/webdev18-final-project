@@ -73,7 +73,7 @@ public class Recipe {
 		return cuisine; 
 	}
 
-	public void setCusine(Cuisine cuisine) {
+	public void setCuisine(Cuisine cuisine) {
 		this.cuisine = cuisine; 
 	}
 
