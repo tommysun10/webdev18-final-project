@@ -46,7 +46,6 @@ public class RecipeService {
 
 	@GetMapping("/api/cuisine/{cuisineId}/recipes")
 	public List<Recipe> findRecipesForCuisine(HttpServletResponse response, @PathVariable("cuisineId") int cuisineId) {
-        System.out.println("Cuisine id = " + cuisineId);
         Optional<Cuisine> cuisineFound = cuisineRepository.findById(cuisineId); 
         if (!cuisineFound.isPresent()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
