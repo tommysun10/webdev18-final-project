@@ -54,6 +54,5 @@ public class RecipeService {
     
     Cuisine cuisine = cuisineFound.get(); 
     return cuisine.getRecipes();    
-    }
-    
+    }    
 }

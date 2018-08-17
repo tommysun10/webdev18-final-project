@@ -2,8 +2,11 @@ package com.example.myapp.services;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
+
+import com.example.myapp.models.Recipe;
 import com.example.myapp.models.User;
 import com.example.myapp.repositories.UserRepository;
+import com.example.myapp.repositories.RecipeRepository;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,9 @@ public class UserService {
 
     @Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	RecipeRepository recipeRepository;
 
 	@PostMapping("/api/user")
 	public User create(@RequestBody User user) {
@@ -109,5 +115,27 @@ public class UserService {
 			return userRepository.save(user);
 		}
 		return null;
-    }
+	}
+	
+	@PostMapping("/api/user/recipe/{recipeId}/like")
+	public User likeRecipe(@PathVariable("recipeId") int recipeId,HttpSession session, HttpServletResponse response) {
+		Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
+		if (!recipeFound.isPresent()) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			return null; 
+		}
+	
+		Recipe recipe = recipeFound.get(); 
+		User currentUser = (User) session.getAttribute("user");
+		if (currentUser == null) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			return null;
+		}
+		Optional<User> foundUser =  userRepository.findById(currentUser.getId()); 
+		User user = foundUser.get();
+		List<Recipe> recipesLiked = user.getRecipesLiked(); 
+		recipesLiked.add(recipe); 
+		user.setRecipesLiked(recipesLiked);
+		return userRepository.save(user);
+	}
 }
