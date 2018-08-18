@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
+
+import com.example.myapp.models.Recipe;
 import com.example.myapp.models.User;
 import com.example.myapp.repositories.UserRepository;
 import javax.servlet.http.HttpServletResponse;
@@ -147,4 +149,13 @@ public class UserService {
 		return actCurrentUser.getFollowed();
 	}
 	
+	@GetMapping("/api/user/recipes")
+	public List<Recipe> findAllRecipesForCurrentUser(HttpSession session) {
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		return actCurrentUser.getRecipesLiked();
+	}
 }
