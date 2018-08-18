@@ -3,11 +3,6 @@ package com.example.myapp.services;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.myapp.repositories.RecipeRepository;
-import com.example.myapp.repositories.CuisineRepository;
-import com.example.myapp.models.Cuisine;
-import com.example.myapp.models.Recipe;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,66 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import javax.servlet.http.HttpServletResponse;
-
 
 @RestController
 public class RecipeService {
-    @Autowired
-	RecipeRepository recipeRepository;
-
-    @Autowired
-	CuisineRepository cuisineRepository;
-
-	@PostMapping("/api/cuisine/{cuisineId}/recipe")
-	public Recipe create(HttpServletResponse response, @PathVariable("cuisineId") int cuisineId, @RequestBody Recipe recipe) {
-        Optional<Cuisine> cuisineFound = cuisineRepository.findById(cuisineId); 
-    		if (!cuisineFound.isPresent()) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			    return null; 
-        }
-        
-        Cuisine cuisine = cuisineFound.get(); 
-        recipe.setCuisine(cuisine); 
-		return recipeRepository.save(recipe);
-    }
     
-    @PutMapping("/api/recipe/{recipeId}")
-	public Recipe updateRecipe(HttpServletResponse response, @PathVariable("recipeId") int recipeId, @RequestBody Recipe newRecipe) {
-        Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
-    		if (!recipeFound.isPresent()) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			    return null; 
-        }
-        
-        Recipe recipe = recipeFound.get(); 
-        recipe.setDescription(newRecipe.getDescription());
-        recipe.setTitle(newRecipe.getTitle());
-        recipe.setYoutubeUrl(newRecipe.getYoutubeUrl());
-        recipe.setImageUrl(newRecipe.getImageUrl());
-		return recipeRepository.save(recipe);
-	}
-
-	@GetMapping("/api/cuisine/{cuisineId}/recipes")
-	public List<Recipe> findRecipesForCuisine(HttpServletResponse response, @PathVariable("cuisineId") int cuisineId) {
-        Optional<Cuisine> cuisineFound = cuisineRepository.findById(cuisineId); 
-        if (!cuisineFound.isPresent()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return null; 
-        }
     
-    Cuisine cuisine = cuisineFound.get(); 
-    return cuisine.getRecipes();    
-    }    
-
-    @GetMapping("/api/recipe/{recipeId}")
-	public Recipe findRecipe(HttpServletResponse response, @PathVariable("recipeId") int recipeId) {
-        Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
-        if (!recipeFound.isPresent()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return null; 
-        }
-    
-    return recipeFound.get(); 
-    }    
 }

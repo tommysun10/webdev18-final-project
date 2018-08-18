@@ -1,12 +1,11 @@
 package com.example.myapp.services;
 import java.util.List;
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
+import java.util.Set;
 
-import com.example.myapp.models.Recipe;
+import javax.servlet.http.HttpSession;
 import com.example.myapp.models.User;
 import com.example.myapp.repositories.UserRepository;
-import com.example.myapp.repositories.RecipeRepository;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,9 +26,6 @@ public class UserService {
 
     @Autowired
 	UserRepository userRepository;
-
-	@Autowired
-	RecipeRepository recipeRepository;
 
 	@PostMapping("/api/user")
 	public User create(@RequestBody User user) {
@@ -115,27 +111,40 @@ public class UserService {
 			return userRepository.save(user);
 		}
 		return null;
-	}
-	
-	@PostMapping("/api/user/recipe/{recipeId}/like")
-	public User likeRecipe(@PathVariable("recipeId") int recipeId,HttpSession session, HttpServletResponse response) {
-		Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
-		if (!recipeFound.isPresent()) {
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			return null; 
-		}
-	
-		Recipe recipe = recipeFound.get(); 
+    }
+
+	@PostMapping("/api/user/follow/{followId}")
+	public User follow(@PathVariable("followId") String followId, HttpSession session) {
+		Optional<User> followedUser = this.findUserByUserId(followId);
+		User actFollowedUser = followedUser.get();
+		
 		User currentUser = (User) session.getAttribute("user");
-		if (currentUser == null) {
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			return null;
-		}
-		Optional<User> foundUser =  userRepository.findById(currentUser.getId()); 
-		User user = foundUser.get();
-		user.addRecipeLiked(recipe);
-		recipe.addUserLiked(user); 
-		recipeRepository.save(recipe);
-		return userRepository.save(user);
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		actCurrentUser.addToFollowed(actFollowedUser);
+		return userRepository.save(actCurrentUser);
 	}
+	
+	@GetMapping("/api/user/followers")
+	public Set<User> findFollowers(HttpSession session) {
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		return actCurrentUser.getFollowers();
+	}
+	
+	@GetMapping("/api/user/following")
+	public Set<User> findFollowing(HttpSession session) {
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		return actCurrentUser.getFollowed();
+	}
+	
 }

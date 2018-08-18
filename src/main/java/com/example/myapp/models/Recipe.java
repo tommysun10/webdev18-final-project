@@ -9,11 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ElementCollection;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Recipe {
@@ -27,22 +23,14 @@ public class Recipe {
   private User chef; 
 
   private String description; 
-  private String youtubeUrl; 
-  private String imageUrl;
+  private String youtube; 
 
-  @ManyToMany
-  @JsonIgnore
-  @JoinTable(name = "recipe_user",
-  joinColumns = { @JoinColumn(name = "fk_recipe") },
-  inverseJoinColumns = { @JoinColumn(name = "fk_user") })
+  @ManyToMany(mappedBy = "recipesLiked")
   private List<User> likes; 
 
   @ManyToOne
   @JsonIgnore
   private Cuisine cuisine;
-
-  @ElementCollection(targetClass=String.class)
-  private List<String> ingredients; 
   
 	public int getId() {
 		return id;
@@ -68,20 +56,12 @@ public class Recipe {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getYoutubeUrl() {
-		return youtubeUrl;
+	public String getYoutube() {
+		return youtube;
 	}
-	public void setYoutubeUrl(String youtubeUrl) {
-		this.youtubeUrl = youtubeUrl;
+	public void setYoutube(String youtube) {
+		this.youtube = youtube;
 	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
 	public List<User> getLikes() {
 		return likes;
 	}
@@ -89,24 +69,12 @@ public class Recipe {
 		this.likes = likes;
 	} 
 
-	public void addUserLiked(User user) {
-		this.likes.add(user);
-	}
-
 	public Cuisine getCuisine() {
 		return cuisine; 
 	}
 
-	public void setCuisine(Cuisine cuisine) {
+	public void setCusine(Cuisine cuisine) {
 		this.cuisine = cuisine; 
-	}
-
-	public List<String> getIngredients() {
-		return ingredients;
-	}
-
-	public void setIngredients (List<String> ingredients) {
-		this.ingredients = ingredients;
 	}
 
 
