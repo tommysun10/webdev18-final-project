@@ -55,4 +55,15 @@ public class RecipeService {
     Cuisine cuisine = cuisineFound.get(); 
     return cuisine.getRecipes();    
     }    
+
+    @GetMapping("/api/recipe/{recipeId}")
+	public Recipe findRecipe(HttpServletResponse response, @PathVariable("recipeId") int recipeId) {
+        Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
+        if (!recipeFound.isPresent()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return null; 
+        }
+    
+    return recipeFound.get(); 
+    }    
 }
