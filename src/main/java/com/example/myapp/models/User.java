@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class User {
 	@Id
@@ -27,7 +29,8 @@ public class User {
 	@OneToMany(mappedBy = "chef")
 	private List<Recipe> recipesOwned; 
 
-	@ManyToMany
+	@ManyToMany(mappedBy = "likes")
+    @JsonIgnore
 	private List<Recipe> recipesLiked; 
 
 	
@@ -113,6 +116,10 @@ public class User {
 
 	public void setRecipesLiked(List<Recipe> recipesLiked) {
 		this.recipesLiked = recipesLiked;
+	}
+
+	public void addRecipeLiked(Recipe recipe) {
+		this.recipesLiked.add(recipe);
 	}
 
 	// public List<User> getFollowing() {

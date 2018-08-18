@@ -117,7 +117,7 @@ public class UserService {
 		return null;
 	}
 	
-	@PostMapping("/api/user/recipe/{recipeId}/like")
+	@PutMapping("/api/user/recipe/{recipeId}/like")
 	public User likeRecipe(@PathVariable("recipeId") int recipeId,HttpSession session, HttpServletResponse response) {
 		Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
 		if (!recipeFound.isPresent()) {
@@ -133,9 +133,9 @@ public class UserService {
 		}
 		Optional<User> foundUser =  userRepository.findById(currentUser.getId()); 
 		User user = foundUser.get();
-		List<Recipe> recipesLiked = user.getRecipesLiked(); 
-		recipesLiked.add(recipe); 
-		user.setRecipesLiked(recipesLiked);
+		user.addRecipeLiked(recipe);
+		recipe.addUserLiked(user); 
+		recipeRepository.save(recipe);
 		return userRepository.save(user);
 	}
 }
