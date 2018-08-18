@@ -60,6 +60,7 @@ public class RecipeService {
         recipe.setTitle(newRecipe.getTitle());
         recipe.setYoutubeUrl(newRecipe.getYoutubeUrl());
         recipe.setImageUrl(newRecipe.getImageUrl());
+        recipe.setIngredients(newRecipe.getIngredients());
         return recipeRepository.save(recipe);
     }
 
@@ -97,4 +98,9 @@ public class RecipeService {
 
         return recipeFound.get();
     }
+
+    @DeleteMapping("/api/recipe/{recipeId}")
+	public void deleteRecipe( @PathVariable("recipeId") int recipeId) {
+		this.recipeRepository.deleteById(recipeId);
+	}
 }

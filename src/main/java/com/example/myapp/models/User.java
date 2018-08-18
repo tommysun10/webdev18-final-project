@@ -2,12 +2,17 @@ package com.example.myapp.models;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.CascadeType; 
+import javax.persistence.JoinTable; 
+import javax.persistence.JoinColumn; 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -29,6 +34,17 @@ public class User {
 	@ManyToMany(mappedBy = "likes")
     @JsonIgnore
 	private List<Recipe> recipesLiked; 
+
+
+	@ManyToMany(cascade={CascadeType.ALL})
+	@JsonIgnore
+	@JoinTable(name="UserRelationship",
+		joinColumns={@JoinColumn(name="followedId")},
+		inverseJoinColumns={@JoinColumn(name="followerId")})
+	private Set<User> followers = new HashSet<User>();
+	
+	@ManyToMany(mappedBy="followers")
+	private Set<User> followed = new HashSet<User>();
 
 	
 	// private List<User> following; 
@@ -118,12 +134,30 @@ public class User {
 	public void addRecipeLiked(Recipe recipe) {
 		this.recipesLiked.add(recipe);
 	}
+	public Set<User> getFollowers() {
+		return followers;
+	}
 
-	// public List<User> getFollowing() {
-	// 	return following;
-	// }
+	public void setFollowers(Set<User> followers) {
+		this.followers = followers;
+	}
 
-	// public void setFollowing(List<User> following) {
-	// 	this.following = following;
-	// }
+	public Set<User> getFollowed() {
+		return followed;
+	}
+
+	public void setFollowed(Set<User> followed) {
+		this.followed = followed;
+	}
+	
+	public void addToFollowed(User user) {
+		if(!user.getFollowers().contains(this))
+			user.addToFollowers(this);
+		this.followed.add(user);
+	}
+	
+	public void addToFollowers(User user) {
+			
+		this.followers.add(user);
+	}
 }
