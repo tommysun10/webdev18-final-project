@@ -1,14 +1,24 @@
 package com.example.myapp.models;
 
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.example.myapp.models.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.JoinColumn;
+
 
 @Entity
 public class User {
@@ -21,17 +31,25 @@ public class User {
 	private String lastName;
 	private String phone;
 	private String email;
-	private String role;
+	private Role role;
 
 	@OneToMany(mappedBy = "chef")
 	private List<Recipe> recipesOwned; 
 
-	@ManyToMany(mappedBy = "likes")
-    @JsonIgnore
+	@ManyToMany
 	private List<Recipe> recipesLiked; 
 
+
+	@ManyToMany(cascade={CascadeType.ALL})
+	@JsonIgnore
+	@JoinTable(name="UserRelationship",
+		joinColumns={@JoinColumn(name="followedId")},
+		inverseJoinColumns={@JoinColumn(name="followerId")})
+	private Set<User> followers = new HashSet<User>();
 	
-	// private List<User> following; 
+	@ManyToMany(mappedBy="followers")
+	private Set<User> followed = new HashSet<User>();
+
 
 	public String getUsername() {
 		return username;
@@ -81,11 +99,11 @@ public class User {
 		this.phone = phone;
 	}
 
-	public String getRole() {
+	public Role getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 
@@ -114,16 +132,35 @@ public class User {
 	public void setRecipesLiked(List<Recipe> recipesLiked) {
 		this.recipesLiked = recipesLiked;
 	}
-
-	public void addRecipeLiked(Recipe recipe) {
-		this.recipesLiked.add(recipe);
+	
+	
+	public Set<User> getFollowers() {
+		return followers;
 	}
 
-	// public List<User> getFollowing() {
-	// 	return following;
-	// }
+	public void setFollowers(Set<User> followers) {
+		this.followers = followers;
+	}
 
-	// public void setFollowing(List<User> following) {
-	// 	this.following = following;
-	// }
+	public Set<User> getFollowed() {
+		return followed;
+	}
+
+	public void setFollowed(Set<User> followed) {
+		this.followed = followed;
+	}
+	
+	public void addToFollowed(User user) {
+		if(!user.getFollowers().contains(this))
+			user.addToFollowers(this);
+		this.followed.add(user);
+	}
+	
+	public void addToFollowers(User user) {
+			
+		this.followers.add(user);
+	}
+	
+	
+
 }

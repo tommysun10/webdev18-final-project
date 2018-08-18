@@ -1,10 +1,7 @@
 package com.example.myapp.services;
 
-import com.example.myapp.models.Cuisine;
 import java.util.List;
 import java.util.Optional;
-
-import com.example.myapp.repositories.CuisineRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,22 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class CuisineService {
-	@Autowired
-	CuisineRepository cuisineRepository;
-
-	@PostMapping("/api/cuisine")
-	public Cuisine create(@RequestBody Cuisine cuisine) {
-		List<Cuisine> cuisineFound = (List<Cuisine>) cuisineRepository.findCuisineByName(cuisine.getTitle());
-		if (!cuisineFound.isEmpty()) {
-			return null;
-		}
-		return cuisineRepository.save(cuisine);
-	}
-
-	@GetMapping("/api/cuisines")
-	public List<Cuisine> findAllCuisines() {
-		return (List<Cuisine>) cuisineRepository.findAll();
-	}
 
 	@DeleteMapping("/api/cuisine/{cuisineId}")
 	public void deleteCuisine( @PathVariable("cuisineId") int cuisineId) {
