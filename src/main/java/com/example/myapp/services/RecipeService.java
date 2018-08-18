@@ -42,6 +42,22 @@ public class RecipeService {
         Cuisine cuisine = cuisineFound.get(); 
         recipe.setCuisine(cuisine); 
 		return recipeRepository.save(recipe);
+    }
+    
+    @PutMapping("/api/recipe/{recipeId}")
+	public Recipe updateRecipe(HttpServletResponse response, @PathVariable("recipeId") int recipeId, @RequestBody Recipe newRecipe) {
+        Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
+    		if (!recipeFound.isPresent()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			    return null; 
+        }
+        
+        Recipe recipe = recipeFound.get(); 
+        recipe.setDescription(newRecipe.getDescription());
+        recipe.setTitle(newRecipe.getTitle());
+        recipe.setYoutubeUrl(newRecipe.getYoutubeUrl());
+        recipe.setImageUrl(newRecipe.getImageUrl());
+		return recipeRepository.save(recipe);
 	}
 
 	@GetMapping("/api/cuisine/{cuisineId}/recipes")
