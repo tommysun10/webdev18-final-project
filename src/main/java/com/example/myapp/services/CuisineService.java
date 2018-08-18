@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class CuisineService {
@@ -36,6 +37,24 @@ public class CuisineService {
 	@GetMapping("/api/cuisines")
 	public List<Cuisine> findAllCuisines() {
 		return (List<Cuisine>) cuisineRepository.findAll();
+	}
+
+	@DeleteMapping("/api/cuisine/{cuisineId}")
+	public void deleteCuisine( @PathVariable("cuisineId") int cuisineId) {
+		this.cuisineRepository.deleteById(cuisineId);
+	}
+
+	@PutMapping("/api/cuisine/{cuisineId}")
+	public Cuisine updateCuisine(HttpServletResponse response, @PathVariable("cuisineId") int cuisineId, @RequestBody Cuisine newCuisine) {
+		Optional<Cuisine> cuisineFound = cuisineRepository.findById(cuisineId);
+        if (!cuisineFound.isPresent()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
+		Cuisine cuisine = cuisineFound.get();
+		cuisine.setTitle(newCuisine.getTitle());
+        return cuisineRepository.save(cuisine);
 	}
 
 }
