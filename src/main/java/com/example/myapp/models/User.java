@@ -2,9 +2,6 @@ package com.example.myapp.models;
 
 import java.sql.Date;
 import java.util.List;
-
-import main.java.com.example.myapp.models.Role;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +21,7 @@ public class User {
 	private String lastName;
 	private String phone;
 	private String email;
-	private Role role;
+	private String role;
 
 	@OneToMany(mappedBy = "chef")
 	private List<Recipe> recipesOwned; 
@@ -84,11 +81,11 @@ public class User {
 		this.phone = phone;
 	}
 
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 
