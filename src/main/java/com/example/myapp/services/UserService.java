@@ -1,5 +1,6 @@
 package com.example.myapp.services;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
@@ -137,5 +138,49 @@ public class UserService {
 		recipe.addUserLiked(user); 
 		recipeRepository.save(recipe);
 		return userRepository.save(user);
+	}
+
+	@PostMapping("/api/user/follow/{followId}")
+	public User follow(@PathVariable("followId") String followId, HttpSession session) {
+		Optional<User> followedUser = this.findUserByUserId(followId);
+		User actFollowedUser = followedUser.get();
+		
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		actCurrentUser.addToFollowed(actFollowedUser);
+		return userRepository.save(actCurrentUser);
+	}
+	
+	@GetMapping("/api/user/followers")
+	public Set<User> findFollowers(HttpSession session) {
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		return actCurrentUser.getFollowers();
+	}
+	
+	@GetMapping("/api/user/following")
+	public Set<User> findFollowing(HttpSession session) {
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		return actCurrentUser.getFollowed();
+	}
+	
+	@GetMapping("/api/user/recipes")
+	public List<Recipe> findAllRecipesForCurrentUser(HttpSession session) {
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		return actCurrentUser.getRecipesLiked();
 	}
 }
