@@ -27,7 +27,8 @@ public class Recipe {
   private User chef; 
 
   private String description; 
-  private String youtube; 
+  private String youtubeUrl; 
+  private String imageUrl;
 
   @ManyToMany
   @JsonIgnore
@@ -67,12 +68,20 @@ public class Recipe {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getYoutube() {
-		return youtube;
+	public String getYoutubeUrl() {
+		return youtubeUrl;
 	}
-	public void setYoutube(String youtube) {
-		this.youtube = youtube;
+	public void setYoutubeUrl(String youtubeUrl) {
+		this.youtubeUrl = youtubeUrl;
 	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
 	public List<User> getLikes() {
 		return likes;
 	}

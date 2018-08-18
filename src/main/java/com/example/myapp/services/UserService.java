@@ -117,7 +117,7 @@ public class UserService {
 		return null;
 	}
 	
-	@PutMapping("/api/user/recipe/{recipeId}/like")
+	@PostMapping("/api/user/recipe/{recipeId}/like")
 	public User likeRecipe(@PathVariable("recipeId") int recipeId,HttpSession session, HttpServletResponse response) {
 		Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
 		if (!recipeFound.isPresent()) {
