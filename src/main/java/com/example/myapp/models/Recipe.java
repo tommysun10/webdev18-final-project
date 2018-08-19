@@ -93,6 +93,10 @@ public class Recipe {
 		this.likes.add(user);
 	}
 
+	public void removeUserLiked(User user) {
+		this.likes.remove(user);
+	}
+
 	public Cuisine getCuisine() {
 		return cuisine; 
 	}

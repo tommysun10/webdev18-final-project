@@ -134,6 +134,11 @@ public class User {
 	public void addRecipeLiked(Recipe recipe) {
 		this.recipesLiked.add(recipe);
 	}
+
+	public void removeRecipeLiked(Recipe recipe) {
+		this.recipesLiked.remove(recipe);
+	}
+
 	public Set<User> getFollowers() {
 		return followers;
 	}

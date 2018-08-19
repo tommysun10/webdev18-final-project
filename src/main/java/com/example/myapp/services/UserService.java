@@ -118,7 +118,7 @@ public class UserService {
 		return null;
 	}
 	
-	@PostMapping("/api/user/recipe/{recipeId}/like")
+	@PutMapping("/api/user/recipe/{recipeId}/like")
 	public User likeRecipe(@PathVariable("recipeId") int recipeId, HttpSession session, HttpServletResponse response) {
 		Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
 		if (!recipeFound.isPresent()) {
@@ -134,8 +134,35 @@ public class UserService {
 		}
 		Optional<User> foundUser =  userRepository.findById(currentUser.getId()); 
 		User user = foundUser.get();
-		user.addRecipeLiked(recipe);
-		recipe.addUserLiked(user); 
+		if (!user.getRecipesLiked().contains(recipe)) {
+			user.addRecipeLiked(recipe);
+			recipe.addUserLiked(user); 
+		}
+
+		recipeRepository.save(recipe);
+		return userRepository.save(user);
+	}
+
+	@PutMapping("/api/user/recipe/{recipeId}/unlike")
+	public User unlikeRecipe(@PathVariable("recipeId") int recipeId, HttpSession session, HttpServletResponse response) {
+		Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
+		if (!recipeFound.isPresent()) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			return null; 
+		}
+	
+		Recipe recipe = recipeFound.get(); 
+		User currentUser = (User) session.getAttribute("user");
+		if (currentUser == null) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			return null;
+		}
+		Optional<User> foundUser =  userRepository.findById(currentUser.getId()); 
+		User user = foundUser.get();
+
+		user.removeRecipeLiked(recipe);
+		recipe.removeUserLiked(user); 
+		
 		recipeRepository.save(recipe);
 		return userRepository.save(user);
 	}
