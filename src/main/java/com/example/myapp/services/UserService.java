@@ -110,12 +110,13 @@ public class UserService {
 	}
 
 	@PostMapping("/api/register")
-	public User register(@RequestBody User user, HttpSession session) {
+	public User register(@RequestBody User user, HttpSession session, HttpServletResponse response) {
 		List<User> userFound = (List<User>) userRepository.findUserByUsername(user.getUsername());
 		if (userFound.isEmpty()) {
 			session.setAttribute("user", user);
 			return userRepository.save(user);
 		}
+		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		return null;
 	}
 	
