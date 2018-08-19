@@ -168,6 +168,22 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
+	@PutMapping("/api/user/unfollow/{followId}")
+	public User unfollow(@PathVariable("followId") String followId, HttpSession session) {
+		Optional<User> followedUser = this.findUserByUserId(followId);
+		User actFollowedUser = followedUser.get();
+		
+		User currentUser = (User) session.getAttribute("user");
+		String cUserId = currentUser.getId().toString();
+		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		actCurrentUser.removeFollow(actFollowedUser);
+		actFollowedUser.removeFollower(actCurrentUser); 
+		userRepository.save(actFollowedUser);
+		return userRepository.save(actCurrentUser);
+	}
+
 	@PutMapping("/api/user/follow/{followId}")
 	public User follow(@PathVariable("followId") String followId, HttpSession session) {
 		Optional<User> followedUser = this.findUserByUserId(followId);

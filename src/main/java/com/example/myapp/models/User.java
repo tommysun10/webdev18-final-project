@@ -164,4 +164,14 @@ public class User {
 	public void addToFollowers(User user) {
 		this.followers.add(user);
 	}
+
+	public void removeFollow(User user) {
+		this.followed.remove(user); 
+	}
+
+	public void removeFollower(User user) {
+		this.followers.remove(user);
+	}
+
+	
 }
