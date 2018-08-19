@@ -157,7 +157,6 @@ public class User {
 	}
 	
 	public void addToFollowers(User user) {
-			
 		this.followers.add(user);
 	}
 }

@@ -119,7 +119,7 @@ public class UserService {
 	}
 	
 	@PostMapping("/api/user/recipe/{recipeId}/like")
-	public User likeRecipe(@PathVariable("recipeId") int recipeId,HttpSession session, HttpServletResponse response) {
+	public User likeRecipe(@PathVariable("recipeId") int recipeId, HttpSession session, HttpServletResponse response) {
 		Optional<Recipe> recipeFound = recipeRepository.findById(recipeId); 
 		if (!recipeFound.isPresent()) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -140,7 +140,7 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	@PostMapping("/api/user/follow/{followId}")
+	@PutMapping("/api/user/follow/{followId}")
 	public User follow(@PathVariable("followId") String followId, HttpSession session) {
 		Optional<User> followedUser = this.findUserByUserId(followId);
 		User actFollowedUser = followedUser.get();
@@ -151,34 +151,31 @@ public class UserService {
 		User actCurrentUser = optCurrentUser.get();
 		
 		actCurrentUser.addToFollowed(actFollowedUser);
+		userRepository.save(actFollowedUser);
 		return userRepository.save(actCurrentUser);
 	}
 	
-	@GetMapping("/api/user/followers")
-	public Set<User> findFollowers(HttpSession session) {
-		User currentUser = (User) session.getAttribute("user");
-		String cUserId = currentUser.getId().toString();
-		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+	@GetMapping("/api/user/{userId}/followers")
+	public Set<User> findFollowers(@PathVariable("userId") String userId,
+						HttpSession session) {
+		Optional<User> optCurrentUser = this.findUserByUserId(userId);
 		User actCurrentUser = optCurrentUser.get();
 		
 		return actCurrentUser.getFollowers();
 	}
 	
-	@GetMapping("/api/user/following")
-	public Set<User> findFollowing(HttpSession session) {
-		User currentUser = (User) session.getAttribute("user");
-		String cUserId = currentUser.getId().toString();
-		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+	@GetMapping("/api/user/{userId}/following")
+	public Set<User> findFollowing(@PathVariable("userId") String userId, HttpSession session) {
+		Optional<User> optCurrentUser = this.findUserByUserId(userId);
 		User actCurrentUser = optCurrentUser.get();
 		
 		return actCurrentUser.getFollowed();
 	}
 	
-	@GetMapping("/api/user/recipes")
-	public List<Recipe> findAllRecipesForCurrentUser(HttpSession session) {
-		User currentUser = (User) session.getAttribute("user");
-		String cUserId = currentUser.getId().toString();
-		Optional<User> optCurrentUser = this.findUserByUserId(cUserId);
+	@GetMapping("/api/user/{userId}/recipes")
+	public List<Recipe> findAllRecipesForCurrentUser(@PathVariable("userId") String userId, 
+									HttpSession session) {
+		Optional<User> optCurrentUser = this.findUserByUserId(userId);
 		User actCurrentUser = optCurrentUser.get();
 		
 		return actCurrentUser.getRecipesLiked();
