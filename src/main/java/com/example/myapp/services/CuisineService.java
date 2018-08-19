@@ -21,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class CuisineService {
 	@Autowired
 	CuisineRepository cuisineRepository;
