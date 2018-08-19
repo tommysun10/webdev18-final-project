@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import com.example.myapp.repositories.RecipeRepository;
+import com.example.myapp.repositories.UserRepository;
 import com.example.myapp.repositories.CuisineRepository;
 import com.example.myapp.models.Cuisine;
 import com.example.myapp.models.Recipe;
 import com.example.myapp.models.User;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,8 +34,11 @@ public class RecipeService {
     @Autowired
     CuisineRepository cuisineRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @PostMapping("/api/cuisine/{cuisineId}/recipe")
-    public Recipe create(HttpServletResponse response, @PathVariable("cuisineId") int cuisineId,
+    public Recipe create(HttpServletResponse response, HttpSession session, @PathVariable("cuisineId") int cuisineId,
             @RequestBody Recipe recipe) {
         Optional<Cuisine> cuisineFound = cuisineRepository.findById(cuisineId);
         if (!cuisineFound.isPresent()) {
@@ -42,6 +47,15 @@ public class RecipeService {
         }
 
         Cuisine cuisine = cuisineFound.get();
+        User currentUser = (User) session.getAttribute("user");
+		if (currentUser == null) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			return null;
+		}
+		Optional<User> foundUser =  userRepository.findById(currentUser.getId()); 
+        User user = foundUser.get();
+        
+        recipe.setChef(user);
         recipe.setCuisine(cuisine);
         return recipeRepository.save(recipe);
     }
@@ -86,6 +100,18 @@ public class RecipeService {
 
         Recipe recipe = recipeFound.get();
         return recipe.getLikes();
+    }
+
+    @GetMapping("/api/recipe/{recipeId}/chef")
+    public User findChefForRecipe(HttpServletResponse response, @PathVariable("recipeId") int recipeId) {
+        Optional<Recipe> recipeFound = recipeRepository.findById(recipeId);
+        if (!recipeFound.isPresent()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
+        Recipe recipe = recipeFound.get();
+        return recipe.getChef();
     }
 
     @GetMapping("/api/recipe/{recipeId}")
