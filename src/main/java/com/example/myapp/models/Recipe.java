@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.Column;
+import javax.persistence.Lob;
 import javax.persistence.ElementCollection;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -26,7 +28,10 @@ public class Recipe {
   @JsonIgnore
   private User chef; 
 
+  @Lob 
+  @Column(name="DESCRIPION", length=512)
   private String description; 
+  
   private String youtubeUrl; 
   private String imageUrl;
 
