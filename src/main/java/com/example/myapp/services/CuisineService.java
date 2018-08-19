@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
-@CrossOrigin(origins = "https://webdev-final-project-angular.herokuapp.com")
+@CrossOrigin(origins = "https://webdev-final-project-angular.herokuapp.com",  allowCredentials = "true")
 public class CuisineService {
 	@Autowired
 	CuisineRepository cuisineRepository;
