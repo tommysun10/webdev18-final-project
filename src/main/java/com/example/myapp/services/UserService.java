@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
+@CrossOrigin(origins = "https://webdev-final-project-angular.herokuapp.com", allowCredentials = "true")
 public class UserService {
 
     @Autowired

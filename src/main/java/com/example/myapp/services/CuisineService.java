@@ -19,8 +19,10 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
+@CrossOrigin(origins = "https://webdev-final-project-angular.herokuapp.com",  allowCredentials = "true")
 public class CuisineService {
 	@Autowired
 	CuisineRepository cuisineRepository;
