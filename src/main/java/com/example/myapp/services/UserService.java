@@ -225,4 +225,13 @@ public class UserService {
 		
 		return actCurrentUser.getRecipesLiked();
 	}
+
+	@GetMapping("/api/user/{userId}/recipesOwned")
+	public List<Recipe> findAllRecipesOwnedForCurrentUser(@PathVariable("userId") String userId, 
+									HttpSession session) {
+		Optional<User> optCurrentUser = this.findUserByUserId(userId);
+		User actCurrentUser = optCurrentUser.get();
+		
+		return actCurrentUser.getRecipesOwned();
+	}
 }
